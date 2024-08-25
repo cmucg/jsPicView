@@ -6,4 +6,4 @@
 - Mouse-wheel to show the next picture.
 - Mouse-wheel with left-mouse-button held to rotate the picture.
 - Mouse-wheel with right-mouse-button held to zoom the picture.
-- Click mouse-wheel to move the center of the image to the point clicked.
+- Click mouse-wheel to fit the image to the screen-height.
