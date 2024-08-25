@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jsPicView001</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            overflow: hidden;
+        }
+
+        h3{
+            color: red;
+            background-color: rgb(50, 122, 19);
+        }
+        #div1{
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+        #img1{
+            transform: translate(0px,0px);
+
+        }
+
+    </style>
+</head>
+<body id="bd1">
+    <!--  webkitdirectory directory  -->
+<input type="file" id="cgInputF" multiple>
+<div id="div1">
+    <img id="img1" alt="">
+</div>
+    
+</body>
+<script>
+// img1.style.transformOrigin=`${e.screenX}px ${e.screenY}px`
+// picNames='001 002 003'.split(' ')
+var i=2
+var bd1=document.getElementById('bd1')
+var div1=document.getElementById('div1')
+var img1=document.getElementById('img1')
+console.log(img1)
+
+
+var ee, cgInputF, cgFiles, cgImgs=[], cgContainer
+cgInputF = document.getElementById('cgInputF')
+cgInputF.onchange = f5
+function f5(event) {
+    ee = event
+    // cgContainer = document.getElementById('cgContainer');
+    // cgContainer.innerHTML = ''; // 清空之前的图片
+
+    cgFiles = event.target.files; cgImgs=[]
+    for (let i = 0; i < cgFiles.length; i++) {
+        if (cgFiles[i].type.toLowerCase().startsWith('image/')) cgImgs.push(cgFiles[i]) 
+    }
+    if(cgImgs.length>0) img1.src = URL.createObjectURL(cgImgs[0])
+}
+
+var ratio=100, angle=0
+var transX=0, transY=0
+var img0w=0, img0h=0
+var mouseX0, mouseY0, mouseX, mouseY
+
+var f0=function(e){e.preventDefault()}
+bd1.oncontextmenu=f0
+
+var f1=function(e){
+    e.preventDefault()
+    ee=e
+    console.log(e)
+    if(e.button==0){ // left mouse button
+        mouseX0=e.screenX
+        mouseY0=e.screenY
+    }
+    if(e.button==1){ // middle mouse button
+        transX = e.screenX - img1.offsetWidth/2
+        transY = e.screenY - img1.offsetHeight/2
+        img1.style.transform=`translate(${transX}px,${transY}px) scale(${ratio/100}) rotateZ(${angle}deg)`
+    }
+    // imgTop=parseInt(img1.style.top)
+    // imgLeft=parseInt(img1.style.left)
+    // imgX=img1.offsetLeft
+    // imgY=img1.offsetTop
+    // console.log(typeof(imgX))
+    // console.log(imgX,imgY)
+    // console.log(imgLeft,imgTop)
+}
+bd1.onmousedown=f1
+
+var f2=function(e){
+    e.preventDefault()
+    if(e.buttons!==1){ return }
+    ee=e
+    mouseX=e.screenX
+    mouseY=e.screenY
+    transX += (mouseX-mouseX0) //3
+    transY += (mouseY-mouseY0) //3
+
+    img1.style.transform=`translate(${transX}px,${transY}px) scale(${ratio/100}) rotateZ(${angle}deg)`
+    mouseX0=mouseX; mouseY0=mouseY;
+    }
+bd1.onmousemove=f2
+
+var f3=function(e){
+    e.preventDefault()
+    ee=e
+    // console.log(e)
+    if (document.fullscreenElement!==div1){
+        console.log('Full screen 1')
+        div1.requestFullscreen()
+        console.log('Full screen 2')
+    }
+    // else{
+    //     console.log('exit full screen 1')
+    //     document.exitFullscreen()
+    //     console.log('exit full screen 2')
+    // }
+}
+bd1.ondblclick=f3
+
+var n, i=1
+var f4=function(e){
+    e.preventDefault()
+    // console.log(e)
+    n=cgImgs.length; if(n<=0) return
+    if(e.buttons==0){ // only wheel
+        if(e.deltaY>0){i++}
+        else{i--}
+        i = ((i%n)+n)%n
+        console.log(i)
+        // img1.src=`./imgs/${picNames[i]}.jpg`
+        img1.src = URL.createObjectURL(cgImgs[i])
+    }
+    if(e.buttons==1){ // wheel with left mouse button down
+        if(e.deltaY>0){angle+=5}
+        else{angle-=5}
+        // img1.style.transformOrigin=`${e.screenX}px ${e.screenY}px`
+        img1.style.transform=`translate(${transX}px,${transY}px) scale(${ratio/100}) rotateZ(${angle}deg)`
+    }
+    if(e.buttons==2){ // wheel with right mouse button down
+        if(e.deltaY<0){ratio*=1.2}
+        else{ratio/=1.2}
+        if(ratio<1){ratio=1}
+        if(90<ratio && ratio<110){ratio=100}
+        // img1.style.transformOrigin=`${mouseX}px ${mouseY}px`
+        img1.style.transform=`translate(${transX}px,${transY}px) scale(${ratio/100}) rotateZ(${angle}deg)`
+    }
+
+}
+bd1.onwheel=f4
+
+</script>
+</html>
+
+
